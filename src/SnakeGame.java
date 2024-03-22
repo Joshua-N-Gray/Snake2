@@ -18,22 +18,23 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
     int boardWidth;
     int boardHeight;
-    int tileSize = 25;
+
+    //Game Settings
+    int tileSize = 100;
+    int foodCount = 35;
+    int obstacleCount = 0;
+    int gameSpeedms = 100;
+    boolean players2 = false;
 
     Tile snakeHead;
     ArrayList<Tile> snakeBody;
 
-    Tile snakePart;
-
     Tile EsnakeHead;
     ArrayList<Tile> EsnakeBody;
 
-    Tile EsnakePart;
 
-    int foodCount = 4;
+
     Tile[] food;
-
-    int obstacleCount;
     Tile[] obstacle;
 
     Random random;
@@ -48,8 +49,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     boolean gameOver;
     boolean EgameOver;
 
-    boolean players2 = false;
-
     enum direction{
         LEFT,RIGHT,DOWN,UP
     }
@@ -60,8 +59,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     SnakeGame(int boardWitdth, int boardHeight) {
 
         food = new Tile[foodCount];
-
-        obstacleCount = 0;
         obstacle = new Tile[obstacleCount];
 
         velocityX = 0;
@@ -95,12 +92,20 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             obstacle[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardWidth / tileSize));
         }
 
+
+
         for (int i = 0; i<foodCount; i++) {
             placeFoods(i);
         }
-        placeObstacles();
-        gameLoop = new Timer(200, this);
+        for (int i = 0; i<obstacleCount; i++) {
+            placeObstacles(i);
+        }
+
+        spawnCheck();
+
+        gameLoop = new Timer(gameSpeedms, this);
         gameLoop.start();
+
     }
 
     public void paintComponent(Graphics g) {
@@ -163,83 +168,114 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             food[i].y = random.nextInt(boardHeight / tileSize);
     }
 
-    public void placeObstacles() {
-        for (int i = 0; i < obstacleCount; ++i) {
+    public void placeObstacles(int i) {
             obstacle[i].x = random.nextInt(boardWidth / tileSize);
             obstacle[i].y = random.nextInt(boardHeight / tileSize);
-        }
     }
 
     public boolean collision(Tile tile1, Tile tile2) {
         return tile1.x == tile2.x && tile1.y == tile2.y;
     }
 
-    public void move() {
-
+    public void spawnCheck() {
         for(int i = 0; i < foodCount; ++i) {
             if (collision(snakeHead, food[i])) {
-                snakeBody.add(new Tile(food[i].x, food[i].y));
                 placeFoods(i);
             }
         }
-
-        for(int i = snakeBody.size() - 1; i >= 0; --i) {
-            snakePart = snakeBody.get(i);
-            if (i == 0) {
-                snakePart.x = snakeHead.x;
-                snakePart.y = snakeHead.y;
-            } else {
-                Tile prevSnakePart = snakeBody.get(i - 1);
-                snakePart.x = prevSnakePart.x;
-                snakePart.y = prevSnakePart.y;
-            }
-        }
-
-        if (velocityX == 1) {
-            previous = direction.RIGHT;
-        }
-        if (velocityX == -1) {
-            previous = direction.LEFT;
-        }
-        if (velocityY == 1) {
-            previous = direction.DOWN;
-        }
-        if (velocityY == -1) {
-            previous = direction.UP;
-        }
-
-        snakeHead.x += velocityX;
-        snakeHead.y += velocityY;
-
-        for(int i = 0; i < snakeBody.size(); ++i) {
-            snakePart = snakeBody.get(i);
-            if (collision(snakeHead, snakePart)) {
-                gameOver = true;
-            }
-        }
-
-        for(int i = 0; i < snakeBody.size(); ++i) {
-            EsnakePart = snakeBody.get(i);
-            if (collision(snakeHead, EsnakePart)) {
-                gameOver = true;
-            }
-        }
-
         for(int i = 0; i < obstacleCount; ++i) {
             if (collision(snakeHead, obstacle[i])) {
-                gameOver = true;
+                placeObstacles(i);
             }
         }
-
-        if (snakeHead.x * tileSize < 0 || snakeHead.x * tileSize >= boardWidth || snakeHead.y * tileSize < 0 || snakeHead.y * tileSize >= boardHeight) {
-            gameOver = true;
-        }
-
-
-
     }
 
-    public void Emove() {
+    public void move() {
+
+        Tile snakePart;
+        Tile EsnakePart;
+
+        if (!gameOver) {
+
+            //Snake Eat
+
+            for (int i = 0; i < foodCount; ++i) {
+                if (collision(snakeHead, food[i])) {
+                    snakeBody.add(new Tile(food[i].x, food[i].y));
+                    placeFoods(i);
+                }
+            }
+
+            //Snake Move
+
+            for (int i = snakeBody.size() - 1; i >= 0; --i) {
+                snakePart = snakeBody.get(i);
+                if (i == 0) {
+                    snakePart.x = snakeHead.x;
+                    snakePart.y = snakeHead.y;
+                } else {
+                    Tile prevSnakePart = snakeBody.get(i - 1);
+                    snakePart.x = prevSnakePart.x;
+                    snakePart.y = prevSnakePart.y;
+                }
+            }
+
+            if (velocityX == 1) {
+                previous = direction.RIGHT;
+            }
+            if (velocityX == -1) {
+                previous = direction.LEFT;
+            }
+            if (velocityY == 1) {
+                previous = direction.DOWN;
+            }
+            if (velocityY == -1) {
+                previous = direction.UP;
+            }
+
+            snakeHead.x += velocityX;
+            snakeHead.y += velocityY;
+
+            //Snake Collisions
+
+            for (int i = 0; i < snakeBody.size(); ++i) {
+                snakePart = snakeBody.get(i);
+                if (collision(snakeHead, snakePart)) {
+                    gameOver = true;
+                }
+                if (players2) {
+                    for (int h = 0; h < EsnakeBody.size(); ++h) {
+                        EsnakePart = EsnakeBody.get(h);
+                        if (collision(snakeHead, EsnakePart)) {
+                            gameOver = true;
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < snakeBody.size(); ++i) {
+                EsnakePart = snakeBody.get(i);
+
+            }
+
+            for (int i = 0; i < obstacleCount; ++i) {
+                if (collision(snakeHead, obstacle[i])) {
+                    gameOver = true;
+                }
+            }
+
+            //Snake Kill at Border
+
+            if (snakeHead.x * tileSize < 0 || snakeHead.x * tileSize >= boardWidth || snakeHead.y * tileSize < 0 || snakeHead.y * tileSize >= boardHeight) {
+                gameOver = true;
+            }
+
+        }
+
+        if (players2 && !EgameOver) {
+
+            //Esnake Eat
+
             for (int i = 0; i < foodCount; ++i) {
                 if (collision(EsnakeHead, food[i])) {
                     EsnakeBody.add(new Tile(food[i].x, food[i].y));
@@ -247,6 +283,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 }
             }
 
+            //Esnake Move
 
             for (int i = EsnakeBody.size() - 1; i >= 0; --i) {
                 EsnakePart = EsnakeBody.get(i);
@@ -276,29 +313,32 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             EsnakeHead.x += EvelocityX;
             EsnakeHead.y += EvelocityY;
 
+            //Esnake Collisions
+
             for (int i = 0; i < EsnakeBody.size(); ++i) {
                 EsnakePart = EsnakeBody.get(i);
-                if (collision(EsnakeHead, EsnakePart)) {
-                    EgameOver = true;
+                for (int h = 0; h < snakeBody.size(); ++h) {
+                    snakePart = snakeBody.get(h);
+                    if (collision(EsnakeHead, EsnakePart) || collision(EsnakeHead, snakePart)) {
+                        EgameOver = true;
+                    }
                 }
             }
 
-            for (int i = 0; i < EsnakeBody.size(); ++i) {
-                snakePart = EsnakeBody.get(i);
-                if (collision(EsnakeHead, snakePart)) {
-                    EgameOver = true;
-                }
-            }
 
             for (int i = 0; i < obstacleCount; ++i) {
                 if (collision(EsnakeHead, obstacle[i])) {
-                    gameOver = true;
+                    EgameOver = true;
                 }
             }
+
+            //Esnake Kill at Border
 
             if (EsnakeHead.x * tileSize < 0 || EsnakeHead.x * tileSize >= boardWidth || EsnakeHead.y * tileSize < 0 || EsnakeHead.y * tileSize >= boardHeight) {
                 EgameOver = true;
             }
+
+        }
     }
 
     public void testFood() {
@@ -309,20 +349,20 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 }
             }
         }
+        for(int i = 0; i < foodCount; ++i) {
+            for(int h = 0; h < foodCount; ++h) {
+                if (collision(food[i], food[h])) {
+                    if (!(collision(food[i], food[i]))) {
+                        placeFoods(i);
+                    }
+                }
+            }
+        }
     }
 
     public void actionPerformed(ActionEvent e) {
 
-        if (!gameOver) {
-            move();
-        }
-
-        if (players2) {
-            if (!EgameOver) {
-                Emove();
-            }
-        }
-
+        move();
         testFood();
 
         repaint();
