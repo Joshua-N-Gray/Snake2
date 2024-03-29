@@ -20,21 +20,20 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int boardHeight;
 
     //Game Settings
-    int tileSize = 25;
-    int foodCount = 2;
-    int obstacleCount = 100;
+    int tileSize = 5;
+    int foodCount = 2000;
+    int obstacleCount = 50;
     int gameSpeedms = 100;
-    boolean players2 = false;
+    boolean players2 = true;
     boolean grid = false;
-    boolean spineIDK = false;
+    boolean spineIDK = true;
+    boolean locator = false;
 
     Tile snakeHead;
     ArrayList<Tile> snakeBody;
 
     Tile EsnakeHead;
     ArrayList<Tile> EsnakeBody;
-
-
 
     Tile[] food;
     Tile[] obstacle;
@@ -184,6 +183,11 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                     g.drawLine(EsnakeHead.x * tileSize + tileSize / 2, EsnakeHead.y * tileSize + tileSize / 2, EsnakePart.x * tileSize + tileSize / 2, EsnakePart.y * tileSize + tileSize / 2);
                 }
             }
+        }
+
+        if (locator) {
+            g.setColor(Color.yellow);
+            g.drawLine(snakeHead.x * tileSize + tileSize / 2, snakeHead.y * tileSize + tileSize / 2, boardWidth / 2, boardHeight / 2);
         }
 
         //Show border tiles
