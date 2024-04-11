@@ -31,6 +31,10 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     boolean spineIDK = false;
     boolean locator = false;
 
+    public void setPlayers2(boolean players2) {
+        this.players2 = players2;
+    }
+
     Tile snakeHead;
     ArrayList<Tile> snakeBody;
 
