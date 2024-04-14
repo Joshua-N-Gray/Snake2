@@ -2,7 +2,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class App {
+    public static boolean players2 = false;
+
     public static void main(String[] args) {
+
+        boolean snakeStart = true;
 
         // Inits
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -20,10 +24,28 @@ public class App {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        SnakeGame snakeGame = new SnakeGame(deviceWidth, deviceHeight);
-        frame.add(snakeGame);
+        MainMenu mainMenu = new MainMenu(deviceWidth, deviceHeight);
+        frame.add(mainMenu);
         frame.pack();
+
+        SnakeGame snakeGame = new SnakeGame(deviceWidth, deviceHeight);
+
+        while ( snakeStart ){
+            if (!mainMenu.menuStatus) {
+                snakeGame.players2 = players2;
+                frame.add(snakeGame);
+                frame.remove(mainMenu);
+                frame.pack();
+                snakeStart = false;
+            } else {
+                frame.remove(snakeGame);
+                frame.add(mainMenu);
+            }
+        }
+
         snakeGame.requestFocus();
+
+        System.out.println(1);
 
     }// Main
 }// Class
