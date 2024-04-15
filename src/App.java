@@ -2,6 +2,13 @@ import javax.swing.*;
 import java.awt.*;
 
 public class App {
+    public static boolean players2 = false;
+
+    public static boolean snakeStart = true;
+
+    // True for main menu | False for snake game
+    public static boolean menuStatus = true;
+
     public static void main(String[] args) {
 
         // Inits
@@ -20,10 +27,27 @@ public class App {
         frame.setResizable(false);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        SnakeGame snakeGame = new SnakeGame(deviceWidth, deviceHeight);
-        frame.add(snakeGame);
+        MainMenu mainMenu = new MainMenu(deviceWidth, deviceHeight);
+        frame.add(mainMenu);
         frame.pack();
-        snakeGame.requestFocus();
 
-    }// Main
+        SnakeGame snakeGame = new SnakeGame(deviceWidth, deviceHeight);
+
+        while (true) {
+            if (!menuStatus && snakeStart) {
+                snakeGame.players2 = players2;
+                frame.add(snakeGame);
+                frame.remove(mainMenu);
+                frame.pack();
+                snakeStart = false;
+                snakeGame.requestFocus();
+            } else if (menuStatus) {
+                frame.remove(snakeGame);
+                frame.add(mainMenu);
+                frame.pack();
+                snakeStart = true;
+            }
+
+        }
+    }
 }// Class
