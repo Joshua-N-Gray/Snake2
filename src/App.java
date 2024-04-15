@@ -4,9 +4,12 @@ import java.awt.*;
 public class App {
     public static boolean players2 = false;
 
-    public static void main(String[] args) {
+    public static boolean snakeStart = true;
 
-        boolean snakeStart = true;
+    // True for main menu | False for snake game
+    public static boolean menuStatus = true;
+
+    public static void main(String[] args) {
 
         // Inits
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -30,22 +33,21 @@ public class App {
 
         SnakeGame snakeGame = new SnakeGame(deviceWidth, deviceHeight);
 
-        while ( snakeStart ){
-            if (!mainMenu.menuStatus) {
+        while (true) {
+            if (!menuStatus && snakeStart) {
                 snakeGame.players2 = players2;
                 frame.add(snakeGame);
                 frame.remove(mainMenu);
                 frame.pack();
                 snakeStart = false;
-            } else {
+                snakeGame.requestFocus();
+            } else if (menuStatus) {
                 frame.remove(snakeGame);
                 frame.add(mainMenu);
+                frame.pack();
+                snakeStart = true;
             }
+
         }
-
-        snakeGame.requestFocus();
-
-        System.out.println(1);
-
-    }// Main
+    }
 }// Class

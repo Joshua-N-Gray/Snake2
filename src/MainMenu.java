@@ -7,13 +7,8 @@ import javax.swing.*;
 
 public class MainMenu extends JPanel implements ActionListener {
 
-    boolean menuStatus = true;
-
     int width;
     int height;
-
-    JFrame frame;
-
 
     MainMenu(int deviceWidth, int deviceHeight){
 
@@ -38,6 +33,8 @@ public class MainMenu extends JPanel implements ActionListener {
     }
 
     private void draw(Graphics g) {
+        g.setColor(Color.black);
+        g.fill3DRect(0, 0, width, height/3, true);
     }
 
     @Override
@@ -45,12 +42,12 @@ public class MainMenu extends JPanel implements ActionListener {
         if (e.getSource() == singlePlayer) {
             System.out.println("Single Player clicked");
             App.players2 = false;
-            menuStatus = false;
+            App.menuStatus = false;
         }
         if (e.getSource() == twoPlayer) {
             System.out.println("Two Player clicked");
             App.players2 = true;
-            menuStatus = false;
+            App.menuStatus = false;
         }
     }
 }
