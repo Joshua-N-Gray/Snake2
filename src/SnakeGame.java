@@ -1,6 +1,10 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.*;
+import java.io.*;
 import java.util.*;
+import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
@@ -62,6 +66,35 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     boolean EgameOver;
     boolean gamePaused;
 
+    final BufferedImage appleG;
+    {
+        try {
+            appleG = ImageIO.read(new File("C:\\Users\\user\\IdeaProjects\\Snake2 Edit\\src\\Sprites\\AppleV1.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage bananaG;
+    {
+        try {
+            bananaG = ImageIO.read(new File("C:\\Users\\user\\IdeaProjects\\Snake2 Edit\\src\\Sprites\\BananaV1.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakeHeadG;
+    {
+        try {
+            snakeHeadG = ImageIO.read(new File("C:\\Users\\user\\IdeaProjects\\Snake2 Edit\\src\\Sprites\\SnakeHead.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    int headRotationAngle;
+
     enum direction{
         LEFT,RIGHT,DOWN,UP,RESET
     }
@@ -71,8 +104,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
     int boardXoffset;
     int boardYoffset;
-    int spawnXoffset;
-    int spawnYoffset;
 
     JButton exitToMenu = new JButton("Main Menu");
     JButton restart = new JButton("Restart");
@@ -174,12 +205,12 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
         for (int i = 0; i < appleCount; ++i) {
             g.setColor(Color.red);
-            g.fill3DRect(apple[i].x * tileSize + boardXoffset, apple[i].y * tileSize + boardYoffset, tileSize, tileSize, true);
+            g.drawImage(appleG,apple[i].x * tileSize + boardXoffset, apple[i].y * tileSize + boardYoffset, tileSize, tileSize, null);
         }
 
         for (int i = 0; i < bananaCount; ++i) {
             g.setColor(Color.yellow);
-            g.fill3DRect(banana[i].x * tileSize + boardXoffset, banana[i].y * tileSize + boardYoffset, tileSize, tileSize, true);
+            g.drawImage(bananaG,banana[i].x * tileSize + boardXoffset, banana[i].y * tileSize + boardYoffset, tileSize, tileSize, null);
         }
 
         for (int i = 0; i < obstacleCount; ++i) {
@@ -188,7 +219,15 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         }
 
         g.setColor(Color.green);
-        g.fill3DRect(snakeHead.x * tileSize + boardXoffset, snakeHead.y * tileSize + boardYoffset, tileSize, tileSize, true);
+
+        //Rotation
+        double rotationRequired = Math.toRadians (headRotationAngle);
+        double locationX = (double) snakeHeadG.getWidth() / 2;
+        double locationY = (double) snakeHeadG.getHeight() / 2;
+        AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+
+        g.drawImage(op.filter(snakeHeadG, null), snakeHead.x * tileSize + boardXoffset, snakeHead.y * tileSize + boardYoffset, tileSize, tileSize, null);
 
         for (int i = 0; i < snakeBody.size(); ++i) {
             Tile snakePart = snakeBody.get(i);
@@ -665,15 +704,19 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             if (e.getKeyCode() == 38 && previous != direction.DOWN) {
                 velocityX = 0;
                 velocityY = -1;
+                headRotationAngle = 0;
             } else if (e.getKeyCode() == 40 && previous != direction.UP) {
                 velocityX = 0;
                 velocityY = 1;
+                headRotationAngle = 180;
             } else if (e.getKeyCode() == 37 && previous != direction.RIGHT) {
                 velocityX = -1;
                 velocityY = 0;
+                headRotationAngle = 270;
             } else if (e.getKeyCode() == 39 && previous != direction.LEFT) {
                 velocityX = 1;
                 velocityY = 0;
+                headRotationAngle = 90;
             }
 
             if (players2) {
