@@ -1,5 +1,3 @@
-import jdk.jfr.internal.tool.Main;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
