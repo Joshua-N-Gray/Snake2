@@ -1,18 +1,29 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.*;
+import java.io.*;
 import java.util.*;
+import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.Timer;
 
 public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
+    enum direction{
+        LEFT,RIGHT,DOWN,UP,RESET
+    }
+
     class Tile {
         int x;
         int y;
+        direction Dir;
 
-        Tile(int x, int y) {
+
+        Tile(int x, int y, direction Dir) {
             this.x = x;
             this.y = y;
+            this.Dir = Dir;
         }
     }
 
@@ -62,8 +73,112 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     boolean EgameOver;
     boolean gamePaused;
 
-    enum direction{
-        LEFT,RIGHT,DOWN,UP,RESET
+    final BufferedImage appleG;
+    {
+        try {
+            appleG = ImageIO.read(getClass().getResourceAsStream("Sprites/AppleV1.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage bananaG;
+    {
+        try {
+            bananaG = ImageIO.read(getClass().getResourceAsStream("Sprites/BananaV1.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakeHeadG;
+    {
+        try {
+            snakeHeadG = ImageIO.read(getClass().getResourceAsStream("Sprites/snakeHead.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakeTailG;
+    {
+        try {
+            snakeTailG = ImageIO.read(getClass().getResourceAsStream("Sprites/snakeTail.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG0;
+    {
+        try {
+            snakePartG0 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart0.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG0t;
+    {
+        try {
+            snakePartG0t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart0t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG1;
+    {
+        try {
+            snakePartG1 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart1.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG1t;
+    {
+        try {
+            snakePartG1t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart1t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG2;
+    {
+        try {
+            snakePartG2 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart2.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG2t;
+    {
+        try {
+            snakePartG2t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart2t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG3;
+    {
+        try {
+            snakePartG3 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart3.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG3t;
+    {
+        try {
+            snakePartG3t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart3t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     direction previous;
@@ -71,8 +186,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
     int boardXoffset;
     int boardYoffset;
-    int spawnXoffset;
-    int spawnYoffset;
 
     JButton exitToMenu = new JButton("Main Menu");
     JButton restart = new JButton("Restart");
@@ -109,22 +222,22 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         restart.addActionListener(this);
 
         random = new Random();
-        snakeHead = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize));
+        snakeHead = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         snakeBody = new ArrayList();
 
-        EsnakeHead = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize));
+        EsnakeHead = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         EsnakeBody = new ArrayList();
 
         for (int i = 0; i < appleCount; ++i) {
-            apple[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize));
+            apple[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         }
 
         for (int i = 0; i < bananaCount; ++i) {
-            banana[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize));
+            banana[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         }
 
         for (int i = 0; i < obstacleCount; ++i) {
-            obstacle[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize));
+            obstacle[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         }
 
 
@@ -170,12 +283,12 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
         for (int i = 0; i < appleCount; ++i) {
             g.setColor(Color.red);
-            g.fill3DRect(apple[i].x * tileSize + boardXoffset, apple[i].y * tileSize + boardYoffset, tileSize, tileSize, true);
+            g.drawImage(appleG,apple[i].x * tileSize + boardXoffset, apple[i].y * tileSize + boardYoffset, tileSize, tileSize, null);
         }
 
         for (int i = 0; i < bananaCount; ++i) {
             g.setColor(Color.yellow);
-            g.fill3DRect(banana[i].x * tileSize + boardXoffset, banana[i].y * tileSize + boardYoffset, tileSize, tileSize, true);
+            g.drawImage(bananaG,banana[i].x * tileSize + boardXoffset, banana[i].y * tileSize + boardYoffset, tileSize, tileSize, null);
         }
 
         for (int i = 0; i < obstacleCount; ++i) {
@@ -183,12 +296,101 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             g.fill3DRect(obstacle[i].x * tileSize + boardXoffset, obstacle[i].y * tileSize + boardYoffset, tileSize, tileSize, true);
         }
 
+        //Draw Snake Head
         g.setColor(Color.green);
-        g.fill3DRect(snakeHead.x * tileSize + boardXoffset, snakeHead.y * tileSize + boardYoffset, tileSize, tileSize, true);
 
+        //Rotation
+        Double rotationRequired = Math.toRadians (0);
+
+        if (snakeHead.Dir == direction.UP) {
+            rotationRequired = Math.toRadians (0);
+        } else if (snakeHead.Dir == direction.DOWN) {
+            rotationRequired = Math.toRadians (180);
+        } else if (snakeHead.Dir == direction.LEFT) {
+            rotationRequired = Math.toRadians (270);
+        } else if (snakeHead.Dir == direction.RIGHT) {
+            rotationRequired = Math.toRadians (90);
+        }
+
+        double locationX = (double) snakeHeadG.getWidth() / 2;
+        double locationY = (double) snakeHeadG.getHeight() / 2;
+        AffineTransform tx = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+
+        g.drawImage(op.filter(snakeHeadG, null), snakeHead.x * tileSize + boardXoffset, snakeHead.y * tileSize + boardYoffset, tileSize, tileSize, null);
+
+        //Draw Snake Parts
         for (int i = 0; i < snakeBody.size(); ++i) {
             Tile snakePart = snakeBody.get(i);
-            g.fill3DRect(snakePart.x * tileSize + boardXoffset, snakePart.y * tileSize + boardYoffset, tileSize, tileSize, true);
+
+            //Find Part Orientation
+            if (snakePart.Dir == direction.UP) {
+                rotationRequired = Math.toRadians (0);
+            } else if (snakePart.Dir == direction.DOWN) {
+                rotationRequired = Math.toRadians (180);
+            } else if (snakePart.Dir == direction.LEFT) {
+                rotationRequired = Math.toRadians (270);
+            } else if (snakePart.Dir == direction.RIGHT) {
+                rotationRequired = Math.toRadians (90);
+            }
+
+            //Draw Tail
+            if (i == snakeBody.size() - 1) {
+                AffineTransform tx1 = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+                AffineTransformOp op1 = new AffineTransformOp(tx1, AffineTransformOp.TYPE_BILINEAR);
+                g.drawImage(op1.filter(snakeTailG, null), snakePart.x * tileSize + boardXoffset, snakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
+
+            } else {
+                Tile nextSnakePart = snakeBody.get(i + 1);
+
+                BufferedImage partStyle = snakePartG0;
+                BufferedImage partStyleT = snakePartG0t;
+                int styleNum = i % 4;
+
+                if (styleNum == 0) {
+                    partStyle = snakePartG0;
+                    partStyleT = snakePartG0t;
+                } else if (styleNum == 1) {
+                    partStyle = snakePartG1;
+                    partStyleT = snakePartG1t;
+                } else if (styleNum == 2) {
+                    partStyle = snakePartG2;
+                    partStyleT = snakePartG2t;
+                } else if (styleNum == 3) {
+                    partStyle = snakePartG3;
+                    partStyleT = snakePartG3t;
+                }
+
+                if (snakePart.Dir != nextSnakePart.Dir) {
+                    if (snakePart.Dir == direction.UP && nextSnakePart.Dir == direction.LEFT) {
+                        rotationRequired = Math.toRadians (270);
+                    } else if (snakePart.Dir == direction.UP && nextSnakePart.Dir == direction.RIGHT) {
+                        rotationRequired = Math.toRadians (180);
+                    } else if (snakePart.Dir == direction.DOWN && nextSnakePart.Dir == direction.LEFT) {
+                        rotationRequired = Math.toRadians (0);
+                    } else if (snakePart.Dir == direction.DOWN && nextSnakePart.Dir == direction.RIGHT) {
+                        rotationRequired = Math.toRadians (90);
+                    } else if (snakePart.Dir == direction.RIGHT && nextSnakePart.Dir == direction.UP) {
+                        rotationRequired = Math.toRadians (0);
+                    } else if (snakePart.Dir == direction.RIGHT && nextSnakePart.Dir == direction.DOWN) {
+                        rotationRequired = Math.toRadians (270);
+                    } else if (snakePart.Dir == direction.LEFT && nextSnakePart.Dir == direction.UP) {
+                        rotationRequired = Math.toRadians (90);
+                    } else if (snakePart.Dir == direction.LEFT && nextSnakePart.Dir == direction.DOWN) {
+                        rotationRequired = Math.toRadians (180);
+                    }
+
+                    AffineTransform tx2 = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+                    AffineTransformOp op2 = new AffineTransformOp(tx2, AffineTransformOp.TYPE_BILINEAR);
+                    g.drawImage(op2.filter(partStyleT, null), snakePart.x * tileSize + boardXoffset, snakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
+
+                } else {
+                    AffineTransform tx3 = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
+                    AffineTransformOp op3 = new AffineTransformOp(tx3, AffineTransformOp.TYPE_BILINEAR);
+                    g.drawImage(op3.filter(partStyle, null), snakePart.x * tileSize + boardXoffset, snakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
+
+                }
+            }
         }
 
         if (players2) {
@@ -310,7 +512,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
             for (int i = 0; i < appleCount; ++i) {
                 if (collision(snakeHead, apple[i])) {
-                    snakeBody.add(new Tile(apple[i].x, apple[i].y));
+                    snakeBody.add(new Tile(apple[i].x, apple[i].y, direction.UP));
                     placeApple(i);
                     collectedApples++;
                 }
@@ -319,7 +521,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             for (int i = 0; i < bananaCount; ++i) {
                 if (collision(snakeHead, banana[i])) {
                     for (int j = 0; j < 3; j++) {
-                        snakeBody.add(new Tile(banana[i].x, banana[i].y));
+                        snakeBody.add(new Tile(banana[i].x, banana[i].y, direction.UP));
                     }
                     placeBanana(i);
                     collectedBananas++;
@@ -333,26 +535,16 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 if (i == 0) {
                     snakePart.x = snakeHead.x;
                     snakePart.y = snakeHead.y;
+                    snakePart.Dir = snakeHead.Dir;
                 } else {
                     Tile prevSnakePart = snakeBody.get(i - 1);
                     snakePart.x = prevSnakePart.x;
                     snakePart.y = prevSnakePart.y;
+                    snakePart.Dir = prevSnakePart.Dir;
                 }
             }
 
-            if (velocityX == 1) {
-                previous = direction.RIGHT;
-            }
-            if (velocityX == -1) {
-                previous = direction.LEFT;
-            }
-            if (velocityY == 1) {
-                previous = direction.DOWN;
-            }
-            if (velocityY == -1) {
-                previous = direction.UP;
-            }
-
+            previous = snakeHead.Dir;
             snakeHead.x += velocityX;
             snakeHead.y += velocityY;
 
@@ -399,7 +591,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
             for (int i = 0; i < appleCount; ++i) {
                 if (collision(EsnakeHead, apple[i])) {
-                    EsnakeBody.add(new Tile(apple[i].x, apple[i].y));
+                    EsnakeBody.add(new Tile(apple[i].x, apple[i].y, direction.UP));
                     placeApple(i);
                     EcollectedApples++;
                 }
@@ -408,7 +600,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             for (int i = 0; i < bananaCount; ++i) {
                 if (collision(EsnakeHead, banana[i])) {
                     for (int j = 0; j < 3; j++) {
-                        EsnakeBody.add(new Tile(banana[i].x, banana[i].y));
+                        EsnakeBody.add(new Tile(banana[i].x, banana[i].y, direction.UP));
                     }
                     placeBanana(i);
                     EcollectedBananas++;
@@ -661,15 +853,19 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             if (e.getKeyCode() == 38 && previous != direction.DOWN) {
                 velocityX = 0;
                 velocityY = -1;
+                snakeHead.Dir = direction.UP;
             } else if (e.getKeyCode() == 40 && previous != direction.UP) {
                 velocityX = 0;
                 velocityY = 1;
+                snakeHead.Dir = direction.DOWN;
             } else if (e.getKeyCode() == 37 && previous != direction.RIGHT) {
                 velocityX = -1;
                 velocityY = 0;
+                snakeHead.Dir = direction.LEFT;
             } else if (e.getKeyCode() == 39 && previous != direction.LEFT) {
                 velocityX = 1;
                 velocityY = 0;
+                snakeHead.Dir = direction.RIGHT;
             }
 
             if (players2) {
