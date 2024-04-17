@@ -103,7 +103,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakeTailG;
     {
         try {
-            snakeTailG = ImageIO.read(getClass().getResourceAsStream("Sprites/snakeTailG.png"));
+            snakeTailG = ImageIO.read(getClass().getResourceAsStream("Sprites/snakeTail.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -112,7 +112,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG0;
     {
         try {
-            snakePartG0 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePartG0.png"));
+            snakePartG0 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart0.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -121,13 +121,65 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG0t;
     {
         try {
-            snakePartG0t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePartG0t.png"));
+            snakePartG0t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart0t.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    int headRotationAngle;
+    final BufferedImage snakePartG1;
+    {
+        try {
+            snakePartG1 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart1.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG1t;
+    {
+        try {
+            snakePartG1t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart1t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG2;
+    {
+        try {
+            snakePartG2 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart2.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG2t;
+    {
+        try {
+            snakePartG2t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart2t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG3;
+    {
+        try {
+            snakePartG3 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart3.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage snakePartG3t;
+    {
+        try {
+            snakePartG3t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart3t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     direction previous;
     direction Eprevious;
@@ -270,7 +322,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
 
         g.drawImage(op.filter(snakeHeadG, null), snakeHead.x * tileSize + boardXoffset, snakeHead.y * tileSize + boardYoffset, tileSize, tileSize, null);
-        System.out.printf(String.valueOf(rotationRequired));
 
         //Draw Snake Parts
         for (int i = 0; i < snakeBody.size(); ++i) {
@@ -296,6 +347,24 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             } else {
                 Tile nextSnakePart = snakeBody.get(i + 1);
 
+                BufferedImage partStyle = snakePartG0;
+                BufferedImage partStyleT = snakePartG0t;
+                int styleNum = i % 4;
+
+                if (styleNum == 0) {
+                    partStyle = snakePartG0;
+                    partStyleT = snakePartG0t;
+                } else if (styleNum == 1) {
+                    partStyle = snakePartG1;
+                    partStyleT = snakePartG1t;
+                } else if (styleNum == 2) {
+                    partStyle = snakePartG2;
+                    partStyleT = snakePartG2t;
+                } else if (styleNum == 3) {
+                    partStyle = snakePartG3;
+                    partStyleT = snakePartG3t;
+                }
+
                 if (snakePart.Dir != nextSnakePart.Dir) {
                     if (snakePart.Dir == direction.UP && nextSnakePart.Dir == direction.LEFT) {
                         rotationRequired = Math.toRadians (270);
@@ -317,12 +386,12 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
                     AffineTransform tx2 = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
                     AffineTransformOp op2 = new AffineTransformOp(tx2, AffineTransformOp.TYPE_BILINEAR);
-                    g.drawImage(op2.filter(snakePartG0t, null), snakePart.x * tileSize + boardXoffset, snakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
+                    g.drawImage(op2.filter(partStyleT, null), snakePart.x * tileSize + boardXoffset, snakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
 
                 } else {
                     AffineTransform tx3 = AffineTransform.getRotateInstance(rotationRequired, locationX, locationY);
                     AffineTransformOp op3 = new AffineTransformOp(tx3, AffineTransformOp.TYPE_BILINEAR);
-                    g.drawImage(op3.filter(snakePartG0, null), snakePart.x * tileSize + boardXoffset, snakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
+                    g.drawImage(op3.filter(partStyle, null), snakePart.x * tileSize + boardXoffset, snakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
 
                 }
             }
