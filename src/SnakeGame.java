@@ -29,11 +29,11 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int gridY = 30;
     int appleCount = 5;
     int appleMax = 5;
-    int bananaCount = 2;
-    int bananaMax = 2;
+    int bananaCount = 3;
+    int bananaMax = 3;
     int obstacleCount = 20;
     int obstacleMax = 20;
-    int gameSpeedms = 125;
+    int gameSpeedms = 150;
     boolean players2 = false;
     boolean grid = false;
     boolean spineIDK = false;
@@ -114,10 +114,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
         EsnakeHead = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize));
         EsnakeBody = new ArrayList();
-
-        System.out.println(snakeHead.x + ", " + snakeHead.y);
-        System.out.println(EsnakeHead.x + ", " + EsnakeHead.y);
-
 
         for (int i = 0; i < appleCount; ++i) {
             apple[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize));
@@ -703,7 +699,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
 
         // spawn bug test
-        if (e.getKeyCode() == KeyEvent.VK_DELETE /*&& gameOver && !players2 || e.getKeyCode() == KeyEvent.VK_DELETE && gameOver && players2 && EgameOver*/){
+        if (e.getKeyCode() == KeyEvent.VK_DELETE && gameOver && !players2 || e.getKeyCode() == KeyEvent.VK_DELETE && gameOver && players2 && EgameOver){
             resetGame();
         }
 
