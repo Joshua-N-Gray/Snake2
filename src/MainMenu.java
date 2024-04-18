@@ -8,21 +8,34 @@ public class MainMenu extends JPanel implements ActionListener {
     int width;
     int height;
 
+    JButton singlePlayer = new JButton("Single Player");
+    JButton twoPlayer = new JButton("Two Player");
+
     MainMenu(int deviceWidth, int deviceHeight){
+
+        JPanel p = new JPanel();
+        p.add(singlePlayer);
+        p.add(twoPlayer);
+        p.setBackground(Color.lightGray);
 
         this.width = deviceWidth;
         this.height = deviceHeight;
 
         setPreferredSize(new Dimension(this.width, this.height));
-        this.add(singlePlayer);
-        this.add(twoPlayer);
+
+        p.setPreferredSize(new Dimension(width, height/3));
+
+        singlePlayer.setPreferredSize(new Dimension(150, 50));
+        twoPlayer.setPreferredSize(new Dimension(150, 50));
+
+        this.add(p);
+
         singlePlayer.addActionListener(this);
         twoPlayer.addActionListener(this);
+
+        setBackground(Color.darkGray);
+
     }
-
-    JButton singlePlayer = new JButton("Single Player");
-    JButton twoPlayer = new JButton("Two Player");
-
 
     @Override
     public void paintComponents(Graphics g) {
@@ -31,21 +44,19 @@ public class MainMenu extends JPanel implements ActionListener {
     }
 
     private void draw(Graphics g) {
-        g.setColor(Color.black);
-        g.fill3DRect(0, 0, width, height/3, true);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == singlePlayer) {
-            System.out.println("Single Player clicked");
             App.players2 = false;
             App.menuStatus = false;
+            App.snakeRunning = false;
         }
         if (e.getSource() == twoPlayer) {
-            System.out.println("Two Player clicked");
             App.players2 = true;
             App.menuStatus = false;
+            App.snakeRunning = false;
         }
     }
 }

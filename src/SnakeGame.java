@@ -725,7 +725,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 }
             }
 
-            previous = snakeHead.Dir;
+            if ( velocityX != 0 || velocityY != 0) {
+                previous = snakeHead.Dir;
+            }
             snakeHead.x += velocityX;
             snakeHead.y += velocityY;
 
@@ -804,8 +806,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 }
             }
 
-            
-            Eprevious = EsnakeHead.Dir;
+            if ( EvelocityX != 0 || EvelocityY != 0) {
+                Eprevious = EsnakeHead.Dir;
+            }
             EsnakeHead.x += EvelocityX;
             EsnakeHead.y += EvelocityY;
 
@@ -994,14 +997,14 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         if (players2) {
             if (gameOver && EgameOver) {
                 gameLoop.stop();
-//                exitToMenu.setVisible(true);
+                exitToMenu.setVisible(true);
                 restart.setVisible(true);
                 repaint();
             }
         } else {
             if (gameOver) {
                 gameLoop.stop();
-//                exitToMenu.setVisible(true);
+                exitToMenu.setVisible(true);
                 restart.setVisible(true);
                 repaint();
             }
@@ -1011,12 +1014,11 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             resetGame();
         }
 
-/*        if (e.getSource() == exitToMenu){
+        if (e.getSource() == exitToMenu){
             App.menuStatus = true;
-            App.snakeStart = true;
-            System.out.printf("%b, %b%n", App.menuStatus, App.snakeStart);
+            App.snakeRunning = false;
             resetGame();
-        }*/
+        }
 
     }
 
