@@ -4,7 +4,7 @@ import java.awt.*;
 public class App {
     public static boolean players2 = false;
 
-    public static boolean snakeStart = true;
+    public static boolean snakeRunning = false;
 
     // True for main menu | False for snake game
     public static boolean menuStatus = true;
@@ -34,20 +34,22 @@ public class App {
         SnakeGame snakeGame = new SnakeGame(deviceWidth, deviceHeight);
 
         while (true) {
-            if (!menuStatus && snakeStart) {
-                snakeGame.players2 = players2;
-                frame.add(snakeGame);
-                frame.remove(mainMenu);
-                frame.pack();
-                snakeStart = false;
+            if (!menuStatus) {
+                if (!snakeRunning) {
+                    snakeGame.players2 = players2;
+                    frame.add(snakeGame);
+                    frame.remove(mainMenu);
+                    frame.pack();
+                }
                 snakeGame.requestFocus();
-            } else if (menuStatus) {
+                snakeRunning = true;
+            }
+            if (menuStatus) {
                 frame.remove(snakeGame);
                 frame.add(mainMenu);
                 frame.pack();
-                snakeStart = true;
+                mainMenu.repaint();
             }
-
         }
     }
 }// Class

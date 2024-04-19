@@ -181,6 +181,96 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         }
     }
 
+    final BufferedImage EsnakeHeadG;
+    {
+        try {
+            EsnakeHeadG = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakeHead.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakeTailG;
+    {
+        try {
+            EsnakeTailG = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakeTail.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakePartG0;
+    {
+        try {
+            EsnakePartG0 = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart0.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakePartG0t;
+    {
+        try {
+            EsnakePartG0t = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart0t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakePartG1;
+    {
+        try {
+            EsnakePartG1 = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart1.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakePartG1t;
+    {
+        try {
+            EsnakePartG1t = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart1t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakePartG2;
+    {
+        try {
+            EsnakePartG2 = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart2.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakePartG2t;
+    {
+        try {
+            EsnakePartG2t = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart2t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakePartG3;
+    {
+        try {
+            EsnakePartG3 = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart3.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage EsnakePartG3t;
+    {
+        try {
+            EsnakePartG3t = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart3t.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     direction previous;
     direction Eprevious;
 
@@ -301,7 +391,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         }
 
         //Draw Snake Head
-        g.setColor(Color.green);
 
         //Rotation
         Double rotationRequired = Math.toRadians (0);
@@ -398,12 +487,100 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         }
 
         if (players2) {
-            g.setColor(Color.blue);
-            g.fill3DRect(EsnakeHead.x * tileSize + boardXoffset, EsnakeHead.y * tileSize + boardYoffset, tileSize, tileSize, true);
+            //Draw ESnake Head
 
+            //Rotation
+            double ErotationRequired = Math.toRadians (0);
+
+            if (EsnakeHead.Dir == direction.UP) {
+                ErotationRequired = Math.toRadians (0);
+            } else if (EsnakeHead.Dir == direction.DOWN) {
+                ErotationRequired = Math.toRadians (180);
+            } else if (EsnakeHead.Dir == direction.LEFT) {
+                ErotationRequired = Math.toRadians (270);
+            } else if (EsnakeHead.Dir == direction.RIGHT) {
+                ErotationRequired = Math.toRadians (90);
+            }
+
+            double ElocationX = (double) EsnakeHeadG.getWidth() / 2;
+            double ElocationY = (double) EsnakeHeadG.getHeight() / 2;
+            AffineTransform tx4 = AffineTransform.getRotateInstance(ErotationRequired, ElocationX, ElocationY);
+            AffineTransformOp op4 = new AffineTransformOp(tx4, AffineTransformOp.TYPE_BILINEAR);
+
+            g.drawImage(op4.filter(EsnakeHeadG, null), EsnakeHead.x * tileSize + boardXoffset, EsnakeHead.y * tileSize + boardYoffset, tileSize, tileSize, null);
+
+            //Draw ESnake Parts
             for (int i = 0; i < EsnakeBody.size(); ++i) {
                 Tile EsnakePart = EsnakeBody.get(i);
-                g.fill3DRect(EsnakePart.x * tileSize + boardXoffset, EsnakePart.y * tileSize + boardYoffset, tileSize, tileSize, true);
+
+                //Find Part Orientation
+                if (EsnakePart.Dir == direction.UP) {
+                    ErotationRequired = Math.toRadians (0);
+                } else if (EsnakePart.Dir == direction.DOWN) {
+                    ErotationRequired = Math.toRadians (180);
+                } else if (EsnakePart.Dir == direction.LEFT) {
+                    ErotationRequired = Math.toRadians (270);
+                } else if (EsnakePart.Dir == direction.RIGHT) {
+                    ErotationRequired = Math.toRadians (90);
+                }
+
+                //Draw Tail
+                if (i == EsnakeBody.size() - 1) {
+                    AffineTransform tx5 = AffineTransform.getRotateInstance(ErotationRequired, ElocationX, ElocationY);
+                    AffineTransformOp op5 = new AffineTransformOp(tx5, AffineTransformOp.TYPE_BILINEAR);
+                    g.drawImage(op5.filter(EsnakeTailG, null), EsnakePart.x * tileSize + boardXoffset, EsnakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
+
+                } else {
+                    Tile EnextSnakePart = EsnakeBody.get(i + 1);
+
+                    BufferedImage EpartStyle = EsnakePartG0;
+                    BufferedImage EpartStyleT = EsnakePartG0t;
+                    int styleNum = i % 4;
+
+                    if (styleNum == 0) {
+                        EpartStyle = EsnakePartG0;
+                        EpartStyleT = EsnakePartG0t;
+                    } else if (styleNum == 1) {
+                        EpartStyle = EsnakePartG1;
+                        EpartStyleT = EsnakePartG1t;
+                    } else if (styleNum == 2) {
+                        EpartStyle = EsnakePartG2;
+                        EpartStyleT = EsnakePartG2t;
+                    } else if (styleNum == 3) {
+                        EpartStyle = EsnakePartG3;
+                        EpartStyleT = EsnakePartG3t;
+                    }
+
+                    if (EsnakePart.Dir != EnextSnakePart.Dir) {
+                        if (EsnakePart.Dir == direction.UP && EnextSnakePart.Dir == direction.LEFT) {
+                            ErotationRequired = Math.toRadians (270);
+                        } else if (EsnakePart.Dir == direction.UP && EnextSnakePart.Dir == direction.RIGHT) {
+                            ErotationRequired = Math.toRadians (180);
+                        } else if (EsnakePart.Dir == direction.DOWN && EnextSnakePart.Dir == direction.LEFT) {
+                            ErotationRequired = Math.toRadians (0);
+                        } else if (EsnakePart.Dir == direction.DOWN && EnextSnakePart.Dir == direction.RIGHT) {
+                            ErotationRequired = Math.toRadians (90);
+                        } else if (EsnakePart.Dir == direction.RIGHT && EnextSnakePart.Dir == direction.UP) {
+                            ErotationRequired = Math.toRadians (0);
+                        } else if (EsnakePart.Dir == direction.RIGHT && EnextSnakePart.Dir == direction.DOWN) {
+                            ErotationRequired = Math.toRadians (270);
+                        } else if (EsnakePart.Dir == direction.LEFT && EnextSnakePart.Dir == direction.UP) {
+                            ErotationRequired = Math.toRadians (90);
+                        } else if (EsnakePart.Dir == direction.LEFT && EnextSnakePart.Dir == direction.DOWN) {
+                            ErotationRequired = Math.toRadians (180);
+                        }
+
+                        AffineTransform tx6 = AffineTransform.getRotateInstance(ErotationRequired, ElocationX, ElocationY);
+                        AffineTransformOp op6 = new AffineTransformOp(tx6, AffineTransformOp.TYPE_BILINEAR);
+                        g.drawImage(op6.filter(EpartStyleT, null), EsnakePart.x * tileSize + boardXoffset, EsnakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
+
+                    } else {
+                        AffineTransform tx7 = AffineTransform.getRotateInstance(ErotationRequired, ElocationX, ElocationY);
+                        AffineTransformOp op7 = new AffineTransformOp(tx7, AffineTransformOp.TYPE_BILINEAR);
+                        g.drawImage(op7.filter(EpartStyle, null), EsnakePart.x * tileSize + boardXoffset, EsnakePart.y * tileSize + boardYoffset, tileSize, tileSize, null);
+
+                    }
+                }
             }
         }
 
@@ -548,7 +725,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 }
             }
 
-            previous = snakeHead.Dir;
+            if ( velocityX != 0 || velocityY != 0) {
+                previous = snakeHead.Dir;
+            }
             snakeHead.x += velocityX;
             snakeHead.y += velocityY;
 
@@ -618,26 +797,18 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 if (i == 0) {
                     EsnakePart.x = EsnakeHead.x;
                     EsnakePart.y = EsnakeHead.y;
+                    EsnakePart.Dir = EsnakeHead.Dir;
                 } else {
                     Tile EprevSnakePart = EsnakeBody.get(i - 1);
                     EsnakePart.x = EprevSnakePart.x;
                     EsnakePart.y = EprevSnakePart.y;
+                    EsnakePart.Dir = EprevSnakePart.Dir;
                 }
             }
 
-            if (EvelocityX == 1) {
-                Eprevious = direction.RIGHT;
+            if ( EvelocityX != 0 || EvelocityY != 0) {
+                Eprevious = EsnakeHead.Dir;
             }
-            if (EvelocityX == -1) {
-                Eprevious = direction.LEFT;
-            }
-            if (EvelocityY == 1) {
-                Eprevious = direction.DOWN;
-            }
-            if (EvelocityY == -1) {
-                Eprevious = direction.UP;
-            }
-
             EsnakeHead.x += EvelocityX;
             EsnakeHead.y += EvelocityY;
 
@@ -826,14 +997,14 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         if (players2) {
             if (gameOver && EgameOver) {
                 gameLoop.stop();
-//                exitToMenu.setVisible(true);
+                exitToMenu.setVisible(true);
                 restart.setVisible(true);
                 repaint();
             }
         } else {
             if (gameOver) {
                 gameLoop.stop();
-//                exitToMenu.setVisible(true);
+                exitToMenu.setVisible(true);
                 restart.setVisible(true);
                 repaint();
             }
@@ -843,12 +1014,11 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             resetGame();
         }
 
-/*        if (e.getSource() == exitToMenu){
+        if (e.getSource() == exitToMenu){
             App.menuStatus = true;
-            App.snakeStart = true;
-            System.out.printf("%b, %b%n", App.menuStatus, App.snakeStart);
+            App.snakeRunning = false;
             resetGame();
-        }*/
+        }
 
     }
 
@@ -876,15 +1046,19 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 if (e.getKeyCode() == KeyEvent.VK_W && Eprevious != direction.DOWN) {
                     EvelocityX = 0;
                     EvelocityY = -1;
+                    EsnakeHead.Dir = direction.UP;
                 } else if (e.getKeyCode() == KeyEvent.VK_S && Eprevious != direction.UP) {
                     EvelocityX = 0;
                     EvelocityY = 1;
+                    EsnakeHead.Dir = direction.DOWN;
                 } else if (e.getKeyCode() == KeyEvent.VK_A && Eprevious != direction.RIGHT) {
                     EvelocityX = -1;
                     EvelocityY = 0;
+                    EsnakeHead.Dir = direction.LEFT;
                 } else if (e.getKeyCode() == KeyEvent.VK_D && Eprevious != direction.LEFT) {
                     EvelocityX = 1;
                     EvelocityY = 0;
+                    EsnakeHead.Dir = direction.RIGHT;
                 }
             }
         }
