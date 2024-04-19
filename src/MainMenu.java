@@ -1,3 +1,5 @@
+import jdk.jfr.internal.tool.Main;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -38,10 +40,12 @@ public class MainMenu extends JPanel implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == singlePlayer) {
+            System.out.println("Single Player clicked");
             App.players2 = false;
             App.menuStatus = false;
         }
         if (e.getSource() == twoPlayer) {
+            System.out.println("Two Player clicked");
             App.players2 = true;
             App.menuStatus = false;
         }
