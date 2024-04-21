@@ -281,6 +281,12 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     JButton restart = new JButton("Restart");
     JButton exit = new JButton("Quit");
 
+
+    JPanel pausePanel = new JPanel();
+    JButton pExitToMenu = new JButton("Main Menu");
+    JButton pRestart = new JButton("Restart");
+    JButton pExit = new JButton("Quit");
+
     SnakeGame(int deviceWidth, int deviceHeight) {
 
         apple = new Tile[appleMax];
@@ -314,6 +320,20 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         this.add(exit);
         exit.setVisible(false);
         exit.addActionListener(this);
+
+        pausePanel.setPreferredSize(new Dimension(deviceWidth, deviceHeight));
+        pausePanel.setVisible(false);
+        this.add(pausePanel);
+        pausePanel.setBackground(Color.DARK_GRAY);
+        pausePanel.add(pExitToMenu);
+        pExitToMenu.setVisible(false);
+        pExitToMenu.addActionListener(this);
+        pausePanel.add(pRestart);
+        pRestart.setVisible(false);
+        pRestart.addActionListener(this);
+        pausePanel.add(pExit);
+        pExit.setVisible(false);
+        pExit.addActionListener(this);
 
         random = new Random();
         snakeHead = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
@@ -938,11 +958,20 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     }
 
     public void pauseGame() {
-        gamePaused = true;
+        if (!gameOver) {
+            pausePanel.setVisible(true);
+            pExitToMenu.setVisible(true);
+            pRestart.setVisible(true);
+            pExit.setVisible(true);
+            gamePaused = true;
+        }
     }
 
     public void unpauseGame() {
-        gamePaused = false;
+        if (!gameOver) {
+            pausePanel.setVisible(false);
+            gamePaused = false;
+        }
     }
 
     private void resetGame() {
@@ -1024,7 +1053,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        if (e.getSource() == restart && gameOver){
+        if (e.getSource() == restart){
             resetGame();
         }
 
@@ -1035,6 +1064,22 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         }
 
         if (e.getSource() == exit){
+            System.exit(1);
+        }
+
+        if (e.getSource() == pRestart){
+            resetGame();
+            unpauseGame();
+        }
+
+        if (e.getSource() == pExitToMenu){
+            App.menuStatus = true;
+            App.snakeRunning = false;
+            resetGame();
+            unpauseGame();
+        }
+
+        if (e.getSource() == pExit){
             System.exit(1);
         }
 
