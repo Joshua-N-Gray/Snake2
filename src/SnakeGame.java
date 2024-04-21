@@ -38,12 +38,12 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int tileSize = 25;
     int gridX = 40;
     int gridY = 30;
-    int appleCount = 5;
-    int appleMax = 5;
-    int bananaCount = 2;
-    int bananaMax = 2;
-    int obstacleCount = 20;
-    int obstacleMax = 20;
+    int appleCount = 10;
+    int appleMax = 10;
+    int bananaCount = 5;
+    int bananaMax = 5;
+    int obstacleCount = 65;
+    int obstacleMax = 65;
     int gameSpeedms = 125;
     boolean players2 = false;
     boolean grid = false;
@@ -279,6 +279,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
     JButton exitToMenu = new JButton("Main Menu");
     JButton restart = new JButton("Restart");
+    JButton exit = new JButton("Quit");
 
     SnakeGame(int deviceWidth, int deviceHeight) {
 
@@ -310,6 +311,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         this.add(restart);
         restart.setVisible(false);
         restart.addActionListener(this);
+        this.add(exit);
+        exit.setVisible(false);
+        exit.addActionListener(this);
 
         random = new Random();
         snakeHead = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
@@ -354,7 +358,14 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         draw(g);
+        settingsUpdate();
+    }
+
+    private void settingsUpdate() {
         players2 = App.players2;
+        appleCount = App.appleCount;
+        bananaCount = App.bananaCount;
+        obstacleCount = (appleCount * 3) + (bananaCount * 5) + 10;
     }
 
     public void draw(Graphics g) {
@@ -938,6 +949,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
         exitToMenu.setVisible(false);
         restart.setVisible(false);
+        exit.setVisible(false);
 
         gameOver = false;
         collectedApples = 0;
@@ -999,6 +1011,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 gameLoop.stop();
                 exitToMenu.setVisible(true);
                 restart.setVisible(true);
+                exit.setVisible(true);
                 repaint();
             }
         } else {
@@ -1006,6 +1019,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 gameLoop.stop();
                 exitToMenu.setVisible(true);
                 restart.setVisible(true);
+                exit.setVisible(true);
                 repaint();
             }
         }
@@ -1018,6 +1032,10 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             App.menuStatus = true;
             App.snakeRunning = false;
             resetGame();
+        }
+
+        if (e.getSource() == exit){
+            System.exit(1);
         }
 
     }
@@ -1073,10 +1091,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
 
         // spawn bug test
-        if (e.getKeyCode() == KeyEvent.VK_DELETE /*&& gameOver && !players2 || e.getKeyCode() == KeyEvent.VK_DELETE && gameOver && players2 && EgameOver*/){
+        if (e.getKeyCode() == KeyEvent.VK_DELETE && gameOver && !players2 || e.getKeyCode() == KeyEvent.VK_DELETE && gameOver && players2 && EgameOver){
             resetGame();
         }
-
 
     }
 

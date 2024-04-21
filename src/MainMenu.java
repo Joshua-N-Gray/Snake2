@@ -5,33 +5,82 @@ import javax.swing.*;
 
 public class MainMenu extends JPanel implements ActionListener {
 
+    // Variable initiations
     int width;
     int height;
 
+    // Main Menu
     JButton singlePlayer = new JButton("Single Player");
     JButton twoPlayer = new JButton("Two Player");
+    JButton settings = new JButton("Settings");
+    JButton quit = new JButton("Quit");
+    JPanel second = new JPanel();
+    JPanel main = new JPanel();
+
+    // Settings Menu
+    JPanel sets = new JPanel();
+    JButton goBack = new JButton("Return");
+    JButton addApple = new JButton("Add apple (max: 10): " + App.appleCount);
+    JButton lessenApple = new JButton("Remove apple (min: 1): " + App.appleCount);
+    JButton addBanana = new JButton("Add banana (max: 5): " + App.bananaCount);
+    JButton lessenBanana = new JButton("Remove banana (min: 0): " + App.bananaCount);
+
+
 
     MainMenu(int deviceWidth, int deviceHeight){
 
-        JPanel p = new JPanel();
-        p.add(singlePlayer);
-        p.add(twoPlayer);
-        p.setBackground(Color.lightGray);
+        // Main initiation
+        main.add(singlePlayer);
+        main.add(twoPlayer);
+        main.add(settings);
+        main.add(quit);
+        main.setBackground(Color.lightGray);
+        second.setBackground(Color.black);
 
+        singlePlayer.addActionListener(this);
+        twoPlayer.addActionListener(this);
+        settings.addActionListener(this);
+        quit.addActionListener(this);
+
+        singlePlayer.setPreferredSize(new Dimension(150, 50));
+        twoPlayer.setPreferredSize(new Dimension(150, 50));
+        settings.setPreferredSize(new Dimension(150, 50));
+        quit.setPreferredSize(new Dimension(150, 50));
+
+        this.add(second);
+        this.add(main);
+
+        // Settings initiation
+        sets.setBackground(Color.GRAY);
+        sets.add(goBack);
+        sets.add(addApple);
+        sets.add(lessenApple);
+        sets.add(addBanana);
+        sets.add(lessenBanana);
+
+        goBack.setPreferredSize(new Dimension(150, 50));
+        addApple.setPreferredSize(new Dimension(200, 50));
+        lessenApple.setPreferredSize(new Dimension(200, 50));
+        addBanana.setPreferredSize(new Dimension(200, 50));
+        lessenBanana.setPreferredSize(new Dimension(200, 50));
+
+        goBack.addActionListener(this);
+        addApple.addActionListener(this);
+        lessenApple.addActionListener(this);
+        addBanana.addActionListener(this);
+        lessenBanana.addActionListener(this);
+
+        ////////////////////////////////////////////////////////////
+
+        // General
         this.width = deviceWidth;
         this.height = deviceHeight;
 
         setPreferredSize(new Dimension(this.width, this.height));
 
-        p.setPreferredSize(new Dimension(width, height/3));
-
-        singlePlayer.setPreferredSize(new Dimension(150, 50));
-        twoPlayer.setPreferredSize(new Dimension(150, 50));
-
-        this.add(p);
-
-        singlePlayer.addActionListener(this);
-        twoPlayer.addActionListener(this);
+        second.setPreferredSize(new Dimension(width, height * 2/3));
+        main.setPreferredSize(new Dimension(width, height/3));
+        sets.setPreferredSize(new Dimension(width, height));
 
         setBackground(Color.darkGray);
 
@@ -57,6 +106,47 @@ public class MainMenu extends JPanel implements ActionListener {
             App.players2 = true;
             App.menuStatus = false;
             App.snakeRunning = false;
+        }
+        if (e.getSource() == quit){
+            System.exit(1);
+        }
+        if (e.getSource() == settings){
+            this.remove(main);
+            this.remove(second);
+            this.add(sets);
+        }
+        if (e.getSource() == goBack){
+            this.remove(sets);
+            this.add(second);
+            this.add(main);
+        }
+        if (e.getSource() == addApple){
+            if (App.appleCount < 10) {
+                App.appleCount++;
+            }
+            addApple.setLabel("Add apple (max: 10): " + App.appleCount);
+            lessenApple.setLabel("Remove apple (min: 1): " + App.appleCount);
+        }
+        if (e.getSource() == lessenApple){
+            if (App.appleCount > 1) {
+                App.appleCount--;
+            }
+            addApple.setLabel("Add apple (max: 10): " + App.appleCount);
+            lessenApple.setLabel("Remove apple (min: 1): " + App.appleCount);
+        }
+        if (e.getSource() == addBanana){
+            if (App.bananaCount < 5) {
+                App.bananaCount++;
+            }
+            addBanana.setLabel("Add banana (max: 5): " + App.bananaCount);
+            lessenBanana.setLabel("Remove banana (min: 0): " + App.bananaCount);
+        }
+        if (e.getSource() == lessenBanana){
+            if (App.bananaCount > 0) {
+                App.bananaCount--;
+            }
+            addBanana.setLabel("Add banana (max: 5): " + App.bananaCount);
+            lessenBanana.setLabel("Remove banana (min: 0): " + App.bananaCount);
         }
     }
 }
