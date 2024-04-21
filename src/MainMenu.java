@@ -16,6 +16,8 @@ public class MainMenu extends JPanel implements ActionListener {
     JButton quit = new JButton("Quit");
     JPanel second = new JPanel();
     JPanel main = new JPanel();
+    JPanel third = new JPanel();
+    JPanel fourth = new JPanel();
 
     // Settings Menu
     JPanel sets = new JPanel();
@@ -32,11 +34,12 @@ public class MainMenu extends JPanel implements ActionListener {
         // Main initiation
         main.add(singlePlayer);
         main.add(twoPlayer);
-        main.add(settings);
-        main.add(quit);
-        main.setBackground(Color.lightGray);
+        third.add(settings);
+        fourth.add(quit);
+        main.setBackground(Color.black);
         second.setBackground(Color.black);
-
+        third.setBackground(Color.black);
+        fourth.setBackground(Color.black);
         singlePlayer.addActionListener(this);
         twoPlayer.addActionListener(this);
         settings.addActionListener(this);
@@ -49,9 +52,11 @@ public class MainMenu extends JPanel implements ActionListener {
 
         this.add(second);
         this.add(main);
+        this.add(third);
+        this.add(fourth);
 
         // Settings initiation
-        sets.setBackground(Color.GRAY);
+        sets.setBackground(Color.darkGray);
         sets.add(goBack);
         sets.add(addApple);
         sets.add(lessenApple);
@@ -79,10 +84,12 @@ public class MainMenu extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(this.width, this.height));
 
         second.setPreferredSize(new Dimension(width, height * 2/3));
-        main.setPreferredSize(new Dimension(width, height/3));
+        main.setPreferredSize(new Dimension(width, height/9));
+        third.setPreferredSize(new Dimension(width, height/9));
+        fourth.setPreferredSize(new Dimension(width, height/9));
         sets.setPreferredSize(new Dimension(width, height));
 
-        setBackground(Color.darkGray);
+        setBackground(Color.black);
 
     }
 
@@ -113,12 +120,16 @@ public class MainMenu extends JPanel implements ActionListener {
         if (e.getSource() == settings){
             this.remove(main);
             this.remove(second);
+            this.remove(third);
+            this.remove(fourth);
             this.add(sets);
         }
         if (e.getSource() == goBack){
             this.remove(sets);
             this.add(second);
             this.add(main);
+            this.add(third);
+            this.add(fourth);
         }
         if (e.getSource() == addApple){
             if (App.appleCount < 10) {
