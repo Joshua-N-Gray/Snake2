@@ -39,11 +39,11 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int gridX = 40;
     int gridY = 30;
     int appleCount = 10;
-    int appleMax = 10;
+    public static int appleMax = 10;
     int bananaCount = 5;
-    int bananaMax = 5;
+    public static int bananaMax = 5;
     int obstacleCount = 65;
-    int obstacleMax = 65;
+    int obstacleMax = appleMax*3 + bananaMax*5 + 10;
     int gameSpeedms = 125;
     boolean players2 = false;
     boolean grid = false;
@@ -282,10 +282,8 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     JButton exit = new JButton("Quit");
 
 
-    JPanel pausePanel = new JPanel();
-    JButton pExitToMenu = new JButton("Main Menu");
-    JButton pRestart = new JButton("Restart");
-    JButton pExit = new JButton("Quit");
+    JPanel shopPanel = new JPanel();
+    JButton sExitToMenu = new JButton("Main Menu");
 
     SnakeGame(int deviceWidth, int deviceHeight) {
 
@@ -321,19 +319,14 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         exit.setVisible(false);
         exit.addActionListener(this);
 
-        pausePanel.setPreferredSize(new Dimension(deviceWidth, deviceHeight));
-        pausePanel.setVisible(false);
-        this.add(pausePanel);
-        pausePanel.setBackground(Color.DARK_GRAY);
-        pausePanel.add(pExitToMenu);
-        pExitToMenu.setVisible(false);
-        pExitToMenu.addActionListener(this);
-        pausePanel.add(pRestart);
-        pRestart.setVisible(false);
-        pRestart.addActionListener(this);
-        pausePanel.add(pExit);
-        pExit.setVisible(false);
-        pExit.addActionListener(this);
+        shopPanel.setPreferredSize(new Dimension(deviceWidth, deviceHeight));
+        shopPanel.setVisible(false);
+        this.add(shopPanel);
+        shopPanel.setBackground(Color.DARK_GRAY);
+        shopPanel.add(sExitToMenu);
+        sExitToMenu.setVisible(false);
+        sExitToMenu.addActionListener(this);
+        
 
         random = new Random();
         snakeHead = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
@@ -346,15 +339,15 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         System.out.println(EsnakeHead.x + ", " + EsnakeHead.y);
 
 
-        for (int i = 0; i < appleCount; ++i) {
+        for (int i = 0; i < appleMax; ++i) {
             apple[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         }
 
-        for (int i = 0; i < bananaCount; ++i) {
+        for (int i = 0; i < bananaMax; ++i) {
             banana[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         }
 
-        for (int i = 0; i < obstacleCount; ++i) {
+        for (int i = 0; i < obstacleMax; ++i) {
             obstacle[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         }
 
@@ -959,17 +952,16 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
     public void pauseGame() {
         if (!gameOver) {
-            pausePanel.setVisible(true);
-            pExitToMenu.setVisible(true);
-            pRestart.setVisible(true);
-            pExit.setVisible(true);
+            shopPanel.setVisible(true);
+            sExitToMenu.setVisible(true);
             gamePaused = true;
         }
     }
 
     public void unpauseGame() {
         if (!gameOver) {
-            pausePanel.setVisible(false);
+            shopPanel.setVisible(false);
+            sExitToMenu.setVisible(false);
             gamePaused = false;
         }
     }
@@ -1067,22 +1059,12 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             System.exit(1);
         }
 
-        if (e.getSource() == pRestart){
-            resetGame();
-            unpauseGame();
-        }
-
-        if (e.getSource() == pExitToMenu){
+        if (e.getSource() == sExitToMenu){
             App.menuStatus = true;
             App.snakeRunning = false;
             resetGame();
             unpauseGame();
         }
-
-        if (e.getSource() == pExit){
-            System.exit(1);
-        }
-
     }
 
     public void keyPressed(KeyEvent e) {

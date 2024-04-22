@@ -22,9 +22,9 @@ public class MainMenu extends JPanel implements ActionListener {
     // Settings Menu
     JPanel sets = new JPanel();
     JButton goBack = new JButton("Return");
-    JButton addApple = new JButton("Add apple (max: 10): " + App.appleCount);
+    JButton addApple = new JButton("Add apple (max: "+SnakeGame.appleMax+"): " + App.appleCount);
     JButton lessenApple = new JButton("Remove apple (min: 1): " + App.appleCount);
-    JButton addBanana = new JButton("Add banana (max: 5): " + App.bananaCount);
+    JButton addBanana = new JButton("Add banana (max: "+SnakeGame.bananaMax+"): " + App.bananaCount);
     JButton lessenBanana = new JButton("Remove banana (min: 0): " + App.bananaCount);
 
 
@@ -132,31 +132,31 @@ public class MainMenu extends JPanel implements ActionListener {
             this.add(fourth);
         }
         if (e.getSource() == addApple){
-            if (App.appleCount < 10) {
+            if (App.appleCount < SnakeGame.appleMax) {
                 App.appleCount++;
             }
-            addApple.setLabel("Add apple (max: 10): " + App.appleCount);
+            addApple.setLabel("Add apple (max: "+SnakeGame.appleMax+"): " + App.appleCount);
             lessenApple.setLabel("Remove apple (min: 1): " + App.appleCount);
         }
         if (e.getSource() == lessenApple){
             if (App.appleCount > 1) {
                 App.appleCount--;
             }
-            addApple.setLabel("Add apple (max: 10): " + App.appleCount);
+            addApple.setLabel("Add apple (max: "+SnakeGame.appleMax+"): " + App.appleCount);
             lessenApple.setLabel("Remove apple (min: 1): " + App.appleCount);
         }
         if (e.getSource() == addBanana){
-            if (App.bananaCount < 5) {
+            if (App.bananaCount < SnakeGame.bananaMax) {
                 App.bananaCount++;
             }
-            addBanana.setLabel("Add banana (max: 5): " + App.bananaCount);
+            addBanana.setLabel("Add banana (max: "+SnakeGame.bananaMax+"): " + App.bananaCount);
             lessenBanana.setLabel("Remove banana (min: 0): " + App.bananaCount);
         }
         if (e.getSource() == lessenBanana){
             if (App.bananaCount > 0) {
                 App.bananaCount--;
             }
-            addBanana.setLabel("Add banana (max: 5): " + App.bananaCount);
+            addBanana.setLabel("Add banana (max: "+SnakeGame.bananaMax+"): " + App.bananaCount);
             lessenBanana.setLabel("Remove banana (min: 0): " + App.bananaCount);
         }
     }
