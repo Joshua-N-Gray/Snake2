@@ -2,12 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 
 public class App {
-    public static boolean players2 = false;
 
+    // Menu logic booleans
     public static boolean snakeRunning = false;
-
-    // True for main menu | False for snake game
     public static boolean menuStatus = true;
+
+    // Game settings
+    public static boolean players2 = false;
+    public static int appleCount = 1;
+    public static int bananaCount = 0;
 
     public static void main(String[] args) {
 
