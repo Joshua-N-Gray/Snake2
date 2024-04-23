@@ -19,7 +19,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         int y;
         direction Dir;
 
-
         Tile(int x, int y, direction Dir) {
             this.x = x;
             this.y = y;
@@ -33,6 +32,10 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int collectedBananas = 0;
     int EcollectedApples = 0;
     int EcollectedBananas = 0;
+    int spendingApples = 0;
+    int spendingBananas = 0;
+    int EspendingApples = 0;
+    int EspendingBananas = 0;
 
     //Game Settings
     int tileSize = 25;
@@ -76,7 +79,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage appleG;
     {
         try {
-            appleG = ImageIO.read(getClass().getResourceAsStream("Sprites/AppleV1.png"));
+            appleG = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/AppleV1.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -85,7 +88,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage bananaG;
     {
         try {
-            bananaG = ImageIO.read(getClass().getResourceAsStream("Sprites/BananaV1.png"));
+            bananaG = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/BananaV1.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -94,7 +97,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakeHeadG;
     {
         try {
-            snakeHeadG = ImageIO.read(getClass().getResourceAsStream("Sprites/snakeHead.png"));
+            snakeHeadG = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakeHead.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -103,7 +106,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakeTailG;
     {
         try {
-            snakeTailG = ImageIO.read(getClass().getResourceAsStream("Sprites/snakeTail.png"));
+            snakeTailG = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakeTail.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -112,7 +115,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG0;
     {
         try {
-            snakePartG0 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart0.png"));
+            snakePartG0 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakePart0.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -121,7 +124,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG0t;
     {
         try {
-            snakePartG0t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart0t.png"));
+            snakePartG0t = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakePart0t.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -130,7 +133,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG1;
     {
         try {
-            snakePartG1 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart1.png"));
+            snakePartG1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakePart1.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -139,7 +142,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG1t;
     {
         try {
-            snakePartG1t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart1t.png"));
+            snakePartG1t = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakePart1t.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -148,7 +151,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG2;
     {
         try {
-            snakePartG2 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart2.png"));
+            snakePartG2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakePart2.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -157,7 +160,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG2t;
     {
         try {
-            snakePartG2t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart2t.png"));
+            snakePartG2t = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakePart2t.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -166,7 +169,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG3;
     {
         try {
-            snakePartG3 = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart3.png"));
+            snakePartG3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakePart3.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -175,7 +178,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage snakePartG3t;
     {
         try {
-            snakePartG3t = ImageIO.read(getClass().getResourceAsStream("Sprites/snakePart3t.png"));
+            snakePartG3t = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/snakePart3t.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -184,7 +187,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakeHeadG;
     {
         try {
-            EsnakeHeadG = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakeHead.png"));
+            EsnakeHeadG = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakeHead.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -193,7 +196,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakeTailG;
     {
         try {
-            EsnakeTailG = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakeTail.png"));
+            EsnakeTailG = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakeTail.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -202,7 +205,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakePartG0;
     {
         try {
-            EsnakePartG0 = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart0.png"));
+            EsnakePartG0 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakePart0.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -211,7 +214,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakePartG0t;
     {
         try {
-            EsnakePartG0t = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart0t.png"));
+            EsnakePartG0t = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakePart0t.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -220,7 +223,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakePartG1;
     {
         try {
-            EsnakePartG1 = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart1.png"));
+            EsnakePartG1 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakePart1.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -229,7 +232,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakePartG1t;
     {
         try {
-            EsnakePartG1t = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart1t.png"));
+            EsnakePartG1t = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakePart1t.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -238,7 +241,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakePartG2;
     {
         try {
-            EsnakePartG2 = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart2.png"));
+            EsnakePartG2 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakePart2.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -247,7 +250,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakePartG2t;
     {
         try {
-            EsnakePartG2t = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart2t.png"));
+            EsnakePartG2t = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakePart2t.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -256,7 +259,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakePartG3;
     {
         try {
-            EsnakePartG3 = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart3.png"));
+            EsnakePartG3 = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakePart3.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -265,7 +268,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     final BufferedImage EsnakePartG3t;
     {
         try {
-            EsnakePartG3t = ImageIO.read(getClass().getResourceAsStream("Sprites/EsnakePart3t.png"));
+            EsnakePartG3t = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/EsnakePart3t.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -285,7 +288,32 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     JPanel shopPanel = new JPanel();
     JButton sExitToMenu = new JButton("Main Menu");
 
+    File file = new File("src/Stats.txt");
+    Scanner statsReader;
+    {
+        try {
+            statsReader = new Scanner(file);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    int highScore;
+    int score;
+    int Escore;
+    int totalCollectedApples;
+    int totalCollectedBananas;
+
     SnakeGame(int deviceWidth, int deviceHeight) {
+
+        statsReader.next();
+        statsReader.next();
+        highScore = statsReader.nextInt();
+        statsReader.next();
+        statsReader.next();
+        totalCollectedApples = statsReader.nextInt();
+        statsReader.next();
+        statsReader.next();
+        totalCollectedBananas = statsReader.nextInt();
 
         apple = new Tile[appleMax];
         banana = new Tile[bananaMax];
@@ -720,6 +748,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                     snakeBody.add(new Tile(apple[i].x, apple[i].y, direction.UP));
                     placeApple(i);
                     collectedApples++;
+                    spendingApples++;
                 }
             }
 
@@ -730,6 +759,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                     }
                     placeBanana(i);
                     collectedBananas++;
+                    spendingBananas++;
                 }
             }
 
@@ -801,6 +831,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                     EsnakeBody.add(new Tile(apple[i].x, apple[i].y, direction.UP));
                     placeApple(i);
                     EcollectedApples++;
+                    EspendingApples++;
                 }
             }
 
@@ -811,6 +842,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                     }
                     placeBanana(i);
                     EcollectedBananas++;
+                    EspendingBananas++;
                 }
             }
 
@@ -967,6 +999,36 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     }
 
     private void resetGame() {
+        FileWriter statsWriter;
+        {
+            try {
+                statsWriter = new FileWriter(file);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        score = collectedApples + (collectedBananas * 3);
+        if (score > highScore){
+            highScore = score;
+        }
+        if (players2){
+            Escore = EcollectedApples + (EcollectedBananas * 3);
+            if (Escore > highScore){
+                highScore = Escore;
+            }
+        }
+        totalCollectedApples += collectedApples + EcollectedApples;
+        totalCollectedBananas += collectedBananas = EcollectedBananas;
+
+        try {
+            statsWriter.write("High Score: " + highScore +
+                    "\nCollected Apples: " + totalCollectedApples +
+                    "\nCollected Bananas: " + totalCollectedBananas);
+            statsWriter.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         exitToMenu.setVisible(false);
         restart.setVisible(false);
@@ -975,10 +1037,14 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         gameOver = false;
         collectedApples = 0;
         collectedBananas = 0;
+        spendingApples = 0;
+        spendingBananas = 0;
         if (players2){
             EgameOver = false;
             EcollectedApples = 0;
             EcollectedBananas = 0;
+            EspendingApples = 0;
+            EspendingBananas = 0;
         }
         gameLoop.start();
 
@@ -1056,6 +1122,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         }
 
         if (e.getSource() == exit){
+            resetGame();
             System.exit(1);
         }
 
