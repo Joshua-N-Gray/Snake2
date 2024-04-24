@@ -3,6 +3,7 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.io.*;
+import java.sql.SQLOutput;
 import java.util.*;
 import javax.imageio.*;
 import javax.swing.*;
@@ -746,9 +747,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             for (int i = 0; i < appleCount; ++i) {
                 if (collision(snakeHead, apple[i])) {
                     snakeBody.add(new Tile(apple[i].x, apple[i].y, direction.UP));
-                    placeApple(i);
                     collectedApples++;
                     spendingApples++;
+                    placeApple(i);
                 }
             }
 
@@ -757,9 +758,10 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                     for (int j = 0; j < 3; j++) {
                         snakeBody.add(new Tile(banana[i].x, banana[i].y, direction.UP));
                     }
-                    placeBanana(i);
                     collectedBananas++;
                     spendingBananas++;
+                    placeBanana(i);
+                    System.out.println(collectedBananas);
                 }
             }
 
@@ -1018,8 +1020,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 highScore = Escore;
             }
         }
-        totalCollectedApples += collectedApples + EcollectedApples;
-        totalCollectedBananas += collectedBananas = EcollectedBananas;
+
+        totalCollectedApples = collectedApples + EcollectedApples + totalCollectedApples;
+        totalCollectedBananas = collectedBananas + EcollectedBananas + totalCollectedBananas;
 
         try {
             statsWriter.write("High Score: " + highScore +
