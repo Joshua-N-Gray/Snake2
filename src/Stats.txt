@@ -1,0 +1,3 @@
+High Score: 9
+Collected Apples: 17
+Collected Bananas: 0
