@@ -30,12 +30,16 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int boardWidth;
     int boardHeight;
     int collectedApples = 0;
+    int collectedCherries = 0;
     int collectedBananas = 0;
     int EcollectedApples = 0;
+    int EcollectedCherries = 0;
     int EcollectedBananas = 0;
     int spendingApples = 0;
+    int spendingCherries = 0;
     int spendingBananas = 0;
     int EspendingApples = 0;
+    int EspendingCherries = 0;
     int EspendingBananas = 0;
 
     //Game Settings
@@ -43,11 +47,13 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int gridX = 40;
     int gridY = 30;
     int appleCount = 10;
-    public static int appleMax = 10;
+    public static int appleMax = 15;
+    int cherryCount = 10;
+    public static int cherryMax = 10;
     int bananaCount = 5;
     public static int bananaMax = 5;
-    int obstacleCount = 65;
-    int obstacleMax = appleMax*3 + bananaMax*5 + 10;
+    int obstacleCount = 90;
+    int obstacleMax = appleMax*2 + cherryCount*3 + bananaMax*5 + 5;
     int gameSpeedms = 125;
     boolean players2 = false;
     boolean grid = false;
@@ -61,6 +67,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     ArrayList<Tile> EsnakeBody;
 
     Tile[] apple;
+    Tile[] cherry;
     Tile[] banana;
     Tile[] obstacle;
 
@@ -81,6 +88,15 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     {
         try {
             appleG = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/AppleV1.png")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    final BufferedImage cherryG;
+    {
+        try {
+            cherryG = ImageIO.read(Objects.requireNonNull(getClass().getResourceAsStream("Sprites/CherryV1.png")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -302,6 +318,7 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     int score;
     int Escore;
     int totalCollectedApples;
+    int totalCollectedCherries;
     int totalCollectedBananas;
 
     SnakeGame(int deviceWidth, int deviceHeight) {
@@ -314,9 +331,13 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         totalCollectedApples = statsReader.nextInt();
         statsReader.next();
         statsReader.next();
+        totalCollectedCherries = statsReader.nextInt();
+        statsReader.next();
+        statsReader.next();
         totalCollectedBananas = statsReader.nextInt();
 
         apple = new Tile[appleMax];
+        cherry = new Tile[cherryMax];
         banana = new Tile[bananaMax];
         obstacle = new Tile[obstacleMax];
 
@@ -372,6 +393,10 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             apple[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         }
 
+        for (int i = 0; i < cherryCount; ++i) {
+            cherry[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
+        }
+
         for (int i = 0; i < bananaMax; ++i) {
             banana[i] = new Tile(random.nextInt(boardWidth / tileSize), random.nextInt(boardHeight / tileSize), direction.UP);
         }
@@ -384,6 +409,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
         for (int i = 0; i<appleCount; i++) {
             placeApple(i);
+        }
+        for (int i = 0; i<cherryCount; i++) {
+            placeCherry(i);
         }
         for (int i = 0; i<bananaCount; i++) {
             placeBanana(i);
@@ -406,8 +434,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
     private void settingsUpdate() {
         players2 = App.players2;
         appleCount = App.appleCount;
+        cherryCount = App.cherryCount;
         bananaCount = App.bananaCount;
-        obstacleCount = (appleCount * 3) + (bananaCount * 5) + 10;
+        obstacleCount = (appleCount * 2) + (cherryCount * 3) + (bananaCount * 5) + 5;
     }
 
     public void draw(Graphics g) {
@@ -431,6 +460,11 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         for (int i = 0; i < appleCount; ++i) {
             g.setColor(Color.red);
             g.drawImage(appleG,apple[i].x * tileSize + boardXoffset, apple[i].y * tileSize + boardYoffset, tileSize, tileSize, null);
+        }
+
+        for (int i = 0; i < cherryCount; ++i) {
+            g.setColor(Color.red);
+            g.drawImage(cherryG,cherry[i].x * tileSize + boardXoffset, cherry[i].y * tileSize + boardYoffset, tileSize, tileSize, null);
         }
 
         for (int i = 0; i < bananaCount; ++i) {
@@ -640,10 +674,10 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         g.setFont(new Font("TimesNewRoman", 1, 16));
         if (gameOver) {
             g.setColor(Color.green);
-            g.drawString("Game Over: " + (collectedApples + (collectedBananas * 3)), boardXoffset + 10, boardYoffset - 10);
+            g.drawString("Game Over: " + (collectedApples + (collectedCherries * 2) + (collectedBananas * 3)), boardXoffset + 10, boardYoffset - 10);
         } else {
             g.setColor(Color.green);
-            g.drawString("Score: " + (collectedApples + (collectedBananas * 3)), boardXoffset + 10, boardYoffset - 10);
+            g.drawString("Score: " + (collectedApples + (collectedCherries * 2) + (collectedBananas * 3)), boardXoffset + 10, boardYoffset - 10);
         }
 
         if (players2) {
@@ -651,12 +685,12 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 g.setColor(Color.blue);
                 FontMetrics fm = g.getFontMetrics();
                 int Ilength = fm.stringWidth("Game Over: " + String.valueOf(EsnakeBody.size()));
-                g.drawString("Game Over: " + (EcollectedApples + (EcollectedBananas * 3)), boardXoffset  + boardWidth - Ilength - 10, boardYoffset - 10);
+                g.drawString("Game Over: " + (EcollectedApples+ (EcollectedCherries * 2)  + (EcollectedBananas * 3)), boardXoffset  + boardWidth - Ilength - 10, boardYoffset - 10);
             } else {
                 g.setColor(Color.blue);
                 FontMetrics fm = g.getFontMetrics();
                 int Ilength = fm.stringWidth("Score: " + (EcollectedApples + (EcollectedBananas * 3)));
-                g.drawString("Score: " + (EcollectedApples + (EcollectedBananas * 3)), boardXoffset + boardWidth - Ilength - 10, boardYoffset - 10);
+                g.drawString("Score: " + (EcollectedApples+ (EcollectedCherries * 2)  + (EcollectedBananas * 3)), boardXoffset + boardWidth - Ilength - 10, boardYoffset - 10);
             }
         }
 
@@ -713,6 +747,13 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             spawnCheckapple(i);
     }
 
+    public void placeCherry(int i) {
+            cherry[i].x = random.nextInt(boardWidth / tileSize);
+            cherry[i].y = random.nextInt(boardHeight / tileSize);
+            //Continue to replace same cherry until valid location found
+            spawnCheckcherry(i);
+    }
+
     public void placeBanana(int i) {
             banana[i].x = random.nextInt(boardWidth / tileSize);
             banana[i].y = random.nextInt(boardHeight / tileSize);
@@ -753,6 +794,17 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                 }
             }
 
+            for (int i = 0; i < cherryCount; ++i) {
+                if (collision(snakeHead, cherry[i])) {
+                    for (int j = 0; j < 2; j++) {
+                        snakeBody.add(new Tile(cherry[i].x, cherry[i].y, direction.UP));
+                    }
+                    collectedCherries++;
+                    spendingCherries++;
+                    placeCherry(i);
+                }
+            }
+
             for (int i = 0; i < bananaCount; ++i) {
                 if (collision(snakeHead, banana[i])) {
                     for (int j = 0; j < 3; j++) {
@@ -761,7 +813,6 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                     collectedBananas++;
                     spendingBananas++;
                     placeBanana(i);
-                    System.out.println(collectedBananas);
                 }
             }
 
@@ -834,6 +885,17 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
                     placeApple(i);
                     EcollectedApples++;
                     EspendingApples++;
+                }
+            }
+
+            for (int i = 0; i < cherryCount; ++i) {
+                if (collision(EsnakeHead, cherry[i])) {
+                    for (int j = 0; j < 2; j++) {
+                        EsnakeBody.add(new Tile(cherry[i].x, cherry[i].y, direction.UP));
+                    }
+                    placeCherry(i);
+                    EcollectedCherries++;
+                    EspendingCherries++;
                 }
             }
 
@@ -927,6 +989,35 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
         }
     }
 
+    public void spawnCheckcherry(int i) {
+        //replace cherry if spawned on top of snake
+        if (collision(snakeHead, cherry[i])) {
+            placeCherry(i);
+        }
+
+        if (players2) {
+            if (collision(EsnakeHead, cherry[i])) {
+                placeCherry(i);
+            }
+        }
+
+        //replace cherry if spawned on an obstacle
+        for(int h = 0; h < obstacleCount; ++h) {
+            if (collision(cherry[i], obstacle[h])) {
+                placeCherry(i);
+            }
+        }
+
+        //replace cherry if cherry is overlapping
+        for(int h = 0; h < cherryCount; ++h) {
+            if (collision(cherry[i], cherry[h])) {
+                if (i != h) {
+                    placeCherry(i);
+                }
+            }
+        }
+    }
+
     public void spawnCheckBanana(int i) {
         //replace banana if spawned on top of snake
         if (collision(snakeHead, banana[i])) {
@@ -1010,23 +1101,25 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             }
         }
 
-        score = collectedApples + (collectedBananas * 3);
+        score = collectedApples + (collectedCherries * 2) + (collectedBananas * 3);
         if (score > highScore){
             highScore = score;
         }
         if (players2){
-            Escore = EcollectedApples + (EcollectedBananas * 3);
+            Escore = EcollectedApples + (EcollectedCherries * 2) + (EcollectedBananas * 3);
             if (Escore > highScore){
                 highScore = Escore;
             }
         }
 
         totalCollectedApples = collectedApples + EcollectedApples + totalCollectedApples;
+        totalCollectedCherries = collectedCherries + EcollectedCherries + totalCollectedCherries;
         totalCollectedBananas = collectedBananas + EcollectedBananas + totalCollectedBananas;
 
         try {
             statsWriter.write("High Score: " + highScore +
                     "\nCollected Apples: " + totalCollectedApples +
+                    "\nCollected Cherries: " + totalCollectedCherries +
                     "\nCollected Bananas: " + totalCollectedBananas);
             statsWriter.close();
         } catch (IOException e) {
@@ -1039,14 +1132,18 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
         gameOver = false;
         collectedApples = 0;
+        collectedCherries = 0;
         collectedBananas = 0;
         spendingApples = 0;
+        spendingCherries = 0;
         spendingBananas = 0;
         if (players2){
             EgameOver = false;
             EcollectedApples = 0;
+            EcollectedCherries = 0;
             EcollectedBananas = 0;
             EspendingApples = 0;
+            EspendingCherries = 0;
             EspendingBananas = 0;
         }
         gameLoop.start();
@@ -1079,6 +1176,9 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
         for (int i = 0; i<appleCount; i++) {
             placeApple(i);
+        }
+        for (int i = 0; i<cherryCount; i++) {
+            placeCherry(i);
         }
         for (int i = 0; i<bananaCount; i++) {
             placeBanana(i);

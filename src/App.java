@@ -10,6 +10,7 @@ public class App {
     // Game settings
     public static boolean players2 = false;
     public static int appleCount = 1;
+    public static int cherryCount = 0;
     public static int bananaCount = 0;
 
     public static void main(String[] args) {

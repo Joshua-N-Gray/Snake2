@@ -24,6 +24,8 @@ public class MainMenu extends JPanel implements ActionListener {
     JButton goBack = new JButton("Return");
     JButton addApple = new JButton("Add apple (max: "+SnakeGame.appleMax+"): " + App.appleCount);
     JButton lessenApple = new JButton("Remove apple (min: 1): " + App.appleCount);
+    JButton addCherry = new JButton("Add cherry (max: "+SnakeGame.cherryMax+"): " + App.cherryCount);
+    JButton lessenCherry = new JButton("Remove Cherry (min: 0): " + App.cherryCount);
     JButton addBanana = new JButton("Add banana (max: "+SnakeGame.bananaMax+"): " + App.bananaCount);
     JButton lessenBanana = new JButton("Remove banana (min: 0): " + App.bananaCount);
 
@@ -60,18 +62,24 @@ public class MainMenu extends JPanel implements ActionListener {
         sets.add(goBack);
         sets.add(addApple);
         sets.add(lessenApple);
+        sets.add(addCherry);
+        sets.add(lessenCherry);
         sets.add(addBanana);
         sets.add(lessenBanana);
 
         goBack.setPreferredSize(new Dimension(150, 50));
         addApple.setPreferredSize(new Dimension(200, 50));
         lessenApple.setPreferredSize(new Dimension(200, 50));
+        addCherry.setPreferredSize(new Dimension(200, 50));
+        lessenCherry.setPreferredSize(new Dimension(200, 50));
         addBanana.setPreferredSize(new Dimension(200, 50));
         lessenBanana.setPreferredSize(new Dimension(200, 50));
 
         goBack.addActionListener(this);
         addApple.addActionListener(this);
         lessenApple.addActionListener(this);
+        addCherry.addActionListener(this);
+        lessenCherry.addActionListener(this);
         addBanana.addActionListener(this);
         lessenBanana.addActionListener(this);
 
@@ -144,6 +152,20 @@ public class MainMenu extends JPanel implements ActionListener {
             }
             addApple.setLabel("Add apple (max: "+SnakeGame.appleMax+"): " + App.appleCount);
             lessenApple.setLabel("Remove apple (min: 1): " + App.appleCount);
+        }
+        if (e.getSource() == addCherry){
+            if (App.cherryCount < SnakeGame.cherryMax) {
+                App.cherryCount++;
+            }
+            addCherry.setLabel("Add cherry (max: "+SnakeGame.cherryMax+"): " + App.cherryCount);
+            lessenCherry.setLabel("Remove Cherry (min: 0): " + App.cherryCount);
+        }
+        if (e.getSource() == lessenCherry){
+            if (App.cherryCount > 0) {
+                App.cherryCount--;
+            }
+            addCherry.setLabel("Add cherry (max: "+SnakeGame.cherryMax+"): " + App.cherryCount);
+            lessenCherry.setLabel("Remove Cherry (min: 0): " + App.cherryCount);
         }
         if (e.getSource() == addBanana){
             if (App.bananaCount < SnakeGame.bananaMax) {
