@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import javax.swing.*;
 
 public class MainMenu extends JPanel implements ActionListener {
@@ -9,11 +11,22 @@ public class MainMenu extends JPanel implements ActionListener {
     int width;
     int height;
 
+    int buttonWidth = 400;
+    int buttonHeight = 100;
+    int iconWidth = 100;
+    int iconHeight = 100;
+
+    String menuBGcolor = "#000000";
+
     // Main Menu
-    JButton singlePlayer = new JButton("Single Player");
-    JButton twoPlayer = new JButton("Two Player");
-    JButton settings = new JButton("Settings");
-    JButton quit = new JButton("Quit");
+    ImageIcon p1Icon = new ImageIcon(new ImageIcon("src/Sprites/AppleV1.png").getImage().getScaledInstance(iconWidth,iconHeight, Image.SCALE_SMOOTH));
+    JButton singlePlayer = new JButton("1 Player", p1Icon);
+    ImageIcon p2Icon = new ImageIcon(new ImageIcon("src/Sprites/AppleV1.png").getImage().getScaledInstance(iconWidth,iconHeight, Image.SCALE_SMOOTH));
+    JButton twoPlayer = new JButton("2 Players", p2Icon);
+    ImageIcon sIcon = new ImageIcon(new ImageIcon("src/Sprites/AppleV1.png").getImage().getScaledInstance(iconWidth,iconHeight, Image.SCALE_SMOOTH));
+    JButton settings = new JButton("Settings", sIcon);
+    ImageIcon qIcon = new ImageIcon(new ImageIcon("src/Sprites/ExitIcon.png").getImage().getScaledInstance(iconWidth,iconHeight, Image.SCALE_SMOOTH));
+    JButton quit = new JButton("Quit Game", qIcon);
     JPanel second = new JPanel();
     JPanel main = new JPanel();
     JPanel third = new JPanel();
@@ -38,19 +51,31 @@ public class MainMenu extends JPanel implements ActionListener {
         main.add(twoPlayer);
         third.add(settings);
         fourth.add(quit);
-        main.setBackground(Color.black);
-        second.setBackground(Color.black);
-        third.setBackground(Color.black);
-        fourth.setBackground(Color.black);
+        main.setBackground(Color.decode(menuBGcolor));
+        second.setBackground(Color.decode(menuBGcolor));
+        third.setBackground(Color.decode(menuBGcolor));
+        fourth.setBackground(Color.decode(menuBGcolor));
         singlePlayer.addActionListener(this);
         twoPlayer.addActionListener(this);
         settings.addActionListener(this);
         quit.addActionListener(this);
 
-        singlePlayer.setPreferredSize(new Dimension(150, 50));
-        twoPlayer.setPreferredSize(new Dimension(150, 50));
-        settings.setPreferredSize(new Dimension(150, 50));
-        quit.setPreferredSize(new Dimension(150, 50));
+        singlePlayer.setBackground(Color.GRAY);
+        singlePlayer.setBorderPainted(false);
+        singlePlayer.setFont(SnakeGame.font1);
+        singlePlayer.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        twoPlayer.setBackground(Color.GRAY);
+        twoPlayer.setBorderPainted(false);
+        twoPlayer.setFont(SnakeGame.font1);
+        twoPlayer.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        settings.setBackground(Color.GRAY);
+        settings.setBorderPainted(false);
+        settings.setFont(SnakeGame.font1);
+        settings.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
+        quit.setBackground(Color.GRAY);
+        quit.setBorderPainted(false);
+        quit.setFont(SnakeGame.font1);
+        quit.setPreferredSize(new Dimension(buttonWidth, buttonHeight));
 
         this.add(second);
         this.add(main);
@@ -91,13 +116,13 @@ public class MainMenu extends JPanel implements ActionListener {
 
         setPreferredSize(new Dimension(this.width, this.height));
 
-        second.setPreferredSize(new Dimension(width, height * 2/3));
-        main.setPreferredSize(new Dimension(width, height/9));
-        third.setPreferredSize(new Dimension(width, height/9));
-        fourth.setPreferredSize(new Dimension(width, height/9));
+        second.setPreferredSize(new Dimension(width, height/2));
+        main.setPreferredSize(new Dimension(width, height/8));
+        third.setPreferredSize(new Dimension(width, height/8));
+        fourth.setPreferredSize(new Dimension(width, height/8));
         sets.setPreferredSize(new Dimension(width, height));
 
-        setBackground(Color.black);
+        setBackground(Color.decode(menuBGcolor));
 
     }
 

@@ -3,11 +3,13 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 import java.io.*;
+import java.net.URL;
 import java.sql.SQLOutput;
 import java.util.*;
 import javax.imageio.*;
 import javax.swing.*;
 import javax.swing.Timer;
+import java.awt.Font.*;
 
 public class SnakeGame extends JPanel implements ActionListener, KeyListener {
 
@@ -26,6 +28,8 @@ public class SnakeGame extends JPanel implements ActionListener, KeyListener {
             this.Dir = Dir;
         }
     }
+
+    public static Font font1 = new Font("Arial", Font.PLAIN, 40);
 
     int boardWidth;
     int boardHeight;

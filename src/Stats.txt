@@ -1,3 +1,4 @@
-High Score: 0
-Collected Apples: 0
+High Score: 16
+Collected Apples: 16
+Collected Cherries: 0
 Collected Bananas: 0
